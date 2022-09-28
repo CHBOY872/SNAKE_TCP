@@ -18,6 +18,8 @@ public:
                             // a collision
     bool IsFood(Snake *s);
     bool IsOtherSnake(Snake *s);
+    void SnakeTruncate(Snake *s, Snake::item *to);
+    void RemoveSnake(const Snake *s);
 
     // FoodHandler
     void AddFood();
@@ -49,9 +51,11 @@ bool GameHandler::IsFood(Snake *s)
             s->Eat(&(*cr));
             foods->Remove(&cr);
             AddFood();
+            delete it;
             return true;
         }
     }
+    delete it;
     return false;
 }
 
@@ -73,12 +77,59 @@ void GameHandler::AddFood()
 {
     int x = field->GetSizeX();
     int y = field->GetSizeY();
-    Food food(rand() % x, rand() % y);
-    foods->Push(&food); // IN PUSH METHOD A NEW OBJECT WILL BE CREATED
-                        // ACCORDING TO PARAMETERS WHICH WAS WRITTEN
-                        // IN food OBJECT
+    foods->Push(new Food(rand() % x, rand() % y));
 }
 
+bool GameHandler::IsOtherSnake(Snake *s)
+{
+    List<Snake>::Iterator *it = snakes->Iterate();
+    Snake::item *head = s->last;
+    Snake::item *second_snake_start;
+    while (it->More())
+    {
+        ListCursor<Snake> cr(it->Next());
+        if (s != &(*cr))
+        {
+            second_snake_start = cr->first;
+            while (second_snake_start != cr->last)
+            {
+                if (head->pos == second_snake_start->pos)
+                {
+                    SnakeTruncate(&(*cr), second_snake_start);
+                    delete it;
+                    return true;
+                }
+                second_snake_start = second_snake_start->next;
+            }
+        }
+    }
+    delete it;
+    return false;
+}
+
+void GameHandler::SnakeTruncate(Snake *s, Snake::item *to)
+{
+    Snake::item *p = s->first;
+    while (p != to)
+    {
+        Snake::item *tmp = p->next;
+        delete p;
+        p = tmp;
+    }
+}
+
+void GameHandler::RemoveSnake(const Snake *s)
+{
+    List<Snake>::Iterator *it = snakes->Iterate();
+    ListCursor<Snake> sn_c;
+    while (it->More())
+    {
+        sn_c = it->Next();
+        if (&(*sn_c) == s)
+            snakes->Remove(&sn_c);
+    }
+    delete it;
+}
 /////////////////////////
 
 GameHandlerGemstone::
@@ -129,6 +180,16 @@ bool SnakeHandler::IsSnake(Snake *s)
 bool SnakeHandler::IsFood(Snake *s)
 {
     return handler->IsFood(s);
+}
+
+void SnakeHandler::SnakeTruncate(Snake *s, Snake::item *to)
+{
+    handler->SnakeTruncate(s, to);
+}
+
+void SnakeHandler::RemoveSnake(const Snake *s)
+{
+    handler->RemoveSnake(s);
 }
 
 /////////////////////////

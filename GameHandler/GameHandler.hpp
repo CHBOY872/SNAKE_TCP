@@ -5,8 +5,6 @@
 #include "../List/List.hpp"
 #include "../Food/Food.hpp"
 
-class Snake;
-
 class GameHandler;
 class FoodHandler;
 class FieldHandler;
@@ -54,6 +52,8 @@ public:
     bool IsSnake(Snake *s); // check on own collision, returns true, if it was
                             // a collision
     bool IsFood(Snake *s);
+    void SnakeTruncate(Snake *s, Snake::item *to);
+    void RemoveSnake(const Snake *s);
 };
 
 #endif

@@ -3,18 +3,23 @@
 #include "Field/Field.hpp"
 #include "Snake/Snake.hpp"
 #include "GameHandler/GameHandler.hpp"
+#include "Server/Server.hpp"
+
+static int port = 8808;
 
 int main()
 {
-    Field fld(19, 20);
+    Field fld(80, 80);
     List<Food> fod;
     List<Snake> snakes;
     GameHandlerGemstone handler(&fld, &fod, &snakes);
-    Snake *s = new Snake(Position(20, 6), 1, &handler);
-    snakes.Push(s);
-    MoveVector mv(1, 0);
-    s->Move();
-    s->ChangeDirection(&mv);
-    s->Move();
+    EventSelector *sel = new EventSelector;
+    Server *serv = Server::Start(port, sel, &fod, &snakes, &fld, &handler);
+    if (!serv)
+    {
+        perror("server");
+        return 1;
+    }
+    sel->Run();
     return 0;
 }

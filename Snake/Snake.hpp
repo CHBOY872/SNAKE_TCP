@@ -4,8 +4,8 @@
 #include "../Field/Field.hpp"
 #include "../Food/Food.hpp"
 #include "../MoveAndPosition/MoveAndPosition.hpp"
-#include "../GameHandler/GameHandler.hpp"
 
+class GameHandler;
 class GameHandlerGemstone;
 
 class Snake

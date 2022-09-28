@@ -1,3 +1,4 @@
+#include "../GameHandler/GameHandler.hpp"
 #include "Snake.hpp"
 
 void Snake::Move()
@@ -13,7 +14,7 @@ void Snake::Move()
 
 void Snake::ChangeDirection(MoveVector *mv)
 {
-    if (*mv == move)
+    if (*mv == move || *mv == MoveVector(0, 0))
         return;
     move = *mv;
 }

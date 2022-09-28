@@ -39,7 +39,6 @@ public:
     void Pop()
     {
         item *tmp = first->next;
-        delete first->val;
         delete first;
         first = tmp;
     }
@@ -72,7 +71,13 @@ class ListCursor
 public:
     ListCursor(List<T> *_the_master, typename List<T>::item **_itm)
         : the_master(_the_master), itm(_itm) {}
-
+    ListCursor() {}
+    ListCursor<T> &operator=(const ListCursor<T> &a)
+    {
+        the_master = a.the_master;
+        itm = a.itm;
+        return *this;
+    }
     operator T *() { return (*itm)->val; }
     T *operator->() { return (*itm)->val; }
 };
