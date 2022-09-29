@@ -66,10 +66,8 @@ void EventSelector::Remove(FdHandler *h)
 void EventSelector::Run()
 {
     struct timeval start_time;
-    struct timeval max_time; // 1 second
+    struct timeval max_time;
     struct timeval end_time;
-    max_time.tv_sec = 1;
-    max_time.tv_usec = 0;
     for (;;)
     {
         int i, res;
@@ -87,6 +85,8 @@ void EventSelector::Run()
             }
         }
         gettimeofday(&start_time, 0);
+        max_time.tv_usec = 900000;
+        max_time.tv_sec = 0;
         res = select(max_fd + 1, &rds, &wrs, 0, &max_time);
         gettimeofday(&end_time, 0);
         if (res < 0)
@@ -96,13 +96,8 @@ void EventSelector::Run()
         }
         if (res == 0)
         {
-            max_time.tv_sec = 1;
-            max_time.tv_usec = 0;
             server_fd->SetWrite(true);
-            continue;
         }
-        max_time.tv_sec = end_time.tv_sec - start_time.tv_sec;
-        max_time.tv_usec = end_time.tv_usec - start_time.tv_usec;
         for (i = 0; i <= max_fd; i++)
         {
             if (fd_array[i])
@@ -124,12 +119,10 @@ void EventSelector::SetServerFd(FdHandler *h)
 ////////////////////////////////////
 
 Server::Server(int _fd, EventSelector *_the_selector,
-               List<Food> *_foods,
-               List<Snake> *_snakes,
                Field *_field,
                GameHandlerGemstone *_handler)
-    : FdHandler(_fd), first(0), the_selector(_the_selector), foods(_foods),
-      snakes(_snakes), field(_field), handler(_handler), snakes_count(0)
+    : FdHandler(_fd), first(0), the_selector(_the_selector), field(_field),
+      handler(_handler), snakes_count(0), st(not_started)
 {
     the_selector->Add(this);
     the_selector->SetServerFd(this);
@@ -148,8 +141,6 @@ Server::~Server()
 }
 
 Server *Server::Start(int port, EventSelector *_the_selector,
-                      List<Food> *_foods,
-                      List<Snake> *_snakes,
                       Field *_field,
                       GameHandlerGemstone *_handler)
 {
@@ -170,7 +161,7 @@ Server *Server::Start(int port, EventSelector *_the_selector,
     if (-1 == listen(_fd, fd_array_len_start))
         return 0;
 
-    return new Server(_fd, _the_selector, _foods, _snakes, _field, _handler);
+    return new Server(_fd, _the_selector, _field, _handler);
 }
 
 void Server::RemoveClient(Client *cl)
@@ -208,19 +199,53 @@ void Server::Handle(bool r, bool w)
         tmp->cl = new Client(_fd, this, sn);
         tmp->next = first;
         first = tmp;
-        snakes->Push(sn);
+        ((SnakeHandler)*handler).AddSnake(sn);
         the_selector->Add(tmp->cl);
     }
     if (w)
     {
-        DrawAll();
+        item *p = first;
+        switch (st)
+        {
+        case started:
+            while (p)
+            {
+                p->cl->GetSnake()->Move();
+                ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
+                ((SnakeHandler)*handler).IsSnake(p->cl->GetSnake());
+                ((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake());
+                p = p->next;
+            }
+            DrawAll();
+            break;
+
+        default:
+            break;
+        }
+
         SetWrite(false);
     }
 }
 
 void Server::DrawAll()
 {
-    // int
+    item *p = first;
+    int len = field->GetSizeX() * field->GetSizeY() + 1;
+    char *field_for_send = new char[field->GetSizeX() * field->GetSizeY() + 1];
+    ((DrawHandler)*handler).DrawField(field_for_send);
+    while (p)
+    {
+        ((DrawHandler)*handler)
+            .DrawFieldFor(p->cl->GetSnake(), field_for_send);
+        SendTo(p->cl->GetFd(), field_for_send, len);
+        p = p->next;
+    }
+    delete[] field_for_send;
+}
+
+void Server::SendTo(int fd, const char *msg, int len)
+{
+    write(fd, msg, len);
 }
 
 ////////////////////////////////////
@@ -275,6 +300,10 @@ void Client::Handle(bool r, bool w)
 void Client::StringHandle(const char *msg)
 {
     MoveVector s(0, 0);
+    if (!strcmp(msg, ""))
+    {
+        the_master->StartGame();
+    }
     if (!strcmp(msg, "w"))
     {
         s = MoveVector(0, -1);

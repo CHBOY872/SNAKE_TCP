@@ -8,7 +8,6 @@ class Field
     friend class Fieldhandler;
     int size_x;
     int size_y;
-    char **field;
 
 public:
     Field(int _size_x, int _size_y);

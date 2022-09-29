@@ -20,12 +20,17 @@ public:
     bool IsOtherSnake(Snake *s);
     void SnakeTruncate(Snake *s, Snake::item *to);
     void RemoveSnake(const Snake *s);
+    void AddSnake(Snake *s);
 
     // FoodHandler
     void AddFood();
 
     // FieldHandler
     void HandleOutOfField(Snake *s);
+
+    // DrawHandler
+    void DrawField(char *draw_field);
+    void DrawFieldFor(const Snake *s, char *draw_field);
 };
 
 bool GameHandler::IsSnake(Snake *s)
@@ -130,6 +135,64 @@ void GameHandler::RemoveSnake(const Snake *s)
     }
     delete it;
 }
+
+void GameHandler::AddSnake(Snake *s)
+{
+    snakes->Push(s);
+}
+
+void GameHandler::DrawField(char *draw_field)
+{
+    /*
+        erase all field
+        draw all food
+        start drawing every snake
+    */
+    int x = field->GetSizeX();
+    int y = field->GetSizeY();
+    int i;
+    int full_len = x * y;
+    for (i = 0; i < full_len; i++)
+        draw_field[i] = ' ';
+    draw_field[i] = 0;
+    List<Food>::Iterator *it_food = foods->Iterate();
+    while (it_food->More())
+    {
+        ListCursor<Food> cr_food = it_food->Next();
+        draw_field[cr_food->GetX() + cr_food->GetY() * x] = '*';
+    }
+    delete it_food;
+    List<Snake>::Iterator *it_snake = snakes->Iterate();
+    while (it_snake->More())
+    {
+        ListCursor<Snake> cr_snake = it_snake->Next();
+        Snake::item *p = cr_snake->first;
+        while (p)
+        {
+            draw_field[p->pos.GetX() + p->pos.GetY() * x] = '#';
+            p = p->next;
+        }
+    }
+    delete it_snake;
+}
+
+void GameHandler::DrawFieldFor(const Snake *s, char *draw_field)
+{
+    int x = field->GetSizeX();
+    List<Snake>::Iterator *it_snake = snakes->Iterate();
+    while (it_snake->More())
+    {
+        ListCursor<Snake> cr_snake = it_snake->Next();
+        if (&(*cr_snake) == s)
+            draw_field[cr_snake->last->pos.GetX() +
+                       cr_snake->last->pos.GetY() * x] = '@';
+        else
+            draw_field[cr_snake->last->pos.GetX() +
+                       cr_snake->last->pos.GetY() * x] = '%';
+    }
+    delete it_snake;
+}
+
 /////////////////////////
 
 GameHandlerGemstone::
@@ -149,6 +212,10 @@ GameHandlerGemstone::operator FieldHandler()
 GameHandlerGemstone::operator SnakeHandler()
 {
     return SnakeHandler(handler);
+}
+GameHandlerGemstone::operator DrawHandler()
+{
+    return DrawHandler(handler);
 }
 
 /////////////////////////
@@ -182,6 +249,11 @@ bool SnakeHandler::IsFood(Snake *s)
     return handler->IsFood(s);
 }
 
+bool SnakeHandler::IsOtherSnake(Snake *s)
+{
+    return handler->IsOtherSnake(s);
+}
+
 void SnakeHandler::SnakeTruncate(Snake *s, Snake::item *to)
 {
     handler->SnakeTruncate(s, to);
@@ -190,6 +262,25 @@ void SnakeHandler::SnakeTruncate(Snake *s, Snake::item *to)
 void SnakeHandler::RemoveSnake(const Snake *s)
 {
     handler->RemoveSnake(s);
+}
+
+void SnakeHandler::AddSnake(Snake *s)
+{
+    handler->AddSnake(s);
+}
+
+/////////////////////////
+
+DrawHandler::DrawHandler(GameHandler *_handler) : handler(_handler) {}
+
+void DrawHandler::DrawField(char *draw_field)
+{
+    handler->DrawField(draw_field);
+}
+
+void DrawHandler::DrawFieldFor(const Snake *s, char *draw_field)
+{
+    handler->DrawFieldFor(s, draw_field);
 }
 
 /////////////////////////

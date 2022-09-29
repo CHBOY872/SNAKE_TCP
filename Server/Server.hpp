@@ -58,6 +58,12 @@ class Client;
 
 class Server : public FdHandler
 {
+
+    enum game_step
+    {
+        not_started,
+        started
+    };
     struct item
     {
         Client *cl;
@@ -65,29 +71,26 @@ class Server : public FdHandler
     };
     item *first;
     EventSelector *the_selector;
-    List<Food> *foods;
-    List<Snake> *snakes;
     Field *field;
     GameHandlerGemstone *handler;
     int snakes_count;
+    game_step st;
 
     Server(int _fd, EventSelector *_the_selector,
-           List<Food> *_foods,
-           List<Snake> *_snakes,
            Field *_field,
            GameHandlerGemstone *_handler);
 
 public:
     virtual ~Server();
     static Server *Start(int port, EventSelector *_the_selector,
-                         List<Food> *_foods,
-                         List<Snake> *_snakes,
                          Field *_field,
                          GameHandlerGemstone *_handler);
 
     void RemoveClient(Client *cl);
 
     virtual void Handle(bool r, bool w);
+    void SendTo(int fd, const char *msg, int len);
+    void StartGame() { st = started; }
 
 private:
     void DrawAll();
@@ -95,6 +98,7 @@ private:
 
 class Client : public FdHandler
 {
+    friend class Server;
     char buf[buffersize];
     int buf_used;
     Snake *sn;
@@ -107,7 +111,9 @@ public:
 
     virtual void Handle(bool r, bool w);
     void StringHandle(const char *msg);
-    const Snake *GetSnake() { return sn; }
+
+private:
+    Snake *GetSnake() { return sn; }
 };
 
 #endif

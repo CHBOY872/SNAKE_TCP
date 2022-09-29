@@ -14,7 +14,7 @@ int main()
     List<Snake> snakes;
     GameHandlerGemstone handler(&fld, &fod, &snakes);
     EventSelector *sel = new EventSelector;
-    Server *serv = Server::Start(port, sel, &fod, &snakes, &fld, &handler);
+    Server *serv = Server::Start(port, sel, &fld, &handler);
     if (!serv)
     {
         perror("server");

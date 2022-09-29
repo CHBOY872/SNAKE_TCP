@@ -9,6 +9,7 @@ class GameHandler;
 class FoodHandler;
 class FieldHandler;
 class SnakeHandler;
+class DrawHandler;
 
 class GameHandlerGemstone
 {
@@ -23,6 +24,7 @@ public:
     operator FoodHandler();
     operator FieldHandler();
     operator SnakeHandler();
+    operator DrawHandler();
 };
 
 class FoodHandler
@@ -52,8 +54,20 @@ public:
     bool IsSnake(Snake *s); // check on own collision, returns true, if it was
                             // a collision
     bool IsFood(Snake *s);
+    bool IsOtherSnake(Snake *s);
     void SnakeTruncate(Snake *s, Snake::item *to);
     void RemoveSnake(const Snake *s);
+    void AddSnake(Snake *s);
+};
+
+class DrawHandler
+{
+    GameHandler *handler;
+
+public:
+    DrawHandler(GameHandler *_handler);
+    void DrawField(char *draw_field);
+    void DrawFieldFor(const Snake *s, char *draw_field);
 };
 
 #endif
