@@ -29,7 +29,7 @@ public:
     void HandleOutOfField(Snake *s);
 
     // DrawHandler
-    void DrawField(char *draw_field);
+    void DrawField(char *draw_field, int len);
     void DrawFieldFor(const Snake *s, char *draw_field);
 };
 
@@ -141,7 +141,7 @@ void GameHandler::AddSnake(Snake *s)
     snakes->Push(s);
 }
 
-void GameHandler::DrawField(char *draw_field)
+void GameHandler::DrawField(char *draw_field, int len)
 {
     /*
         erase all field
@@ -150,11 +150,13 @@ void GameHandler::DrawField(char *draw_field)
     */
     int x = field->GetSizeX();
     int y = field->GetSizeY();
-    int i;
-    int full_len = x * y;
-    for (i = 0; i < full_len; i++)
-        draw_field[i] = ' ';
-    draw_field[i] = 0;
+    int i, j;
+    for (i = 0; i < y; i++)
+    {
+        for (j = 0; j < x; j++)
+            draw_field[i * y + j] = ' ';
+        draw_field[i * y + j] = 0;
+    }
     List<Food>::Iterator *it_food = foods->Iterate();
     while (it_food->More())
     {
@@ -273,9 +275,9 @@ void SnakeHandler::AddSnake(Snake *s)
 
 DrawHandler::DrawHandler(GameHandler *_handler) : handler(_handler) {}
 
-void DrawHandler::DrawField(char *draw_field)
+void DrawHandler::DrawField(char *draw_field, int len)
 {
-    handler->DrawField(draw_field);
+    handler->DrawField(draw_field, len);
 }
 
 void DrawHandler::DrawFieldFor(const Snake *s, char *draw_field)
