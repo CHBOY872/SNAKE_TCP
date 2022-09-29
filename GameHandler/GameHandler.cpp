@@ -19,7 +19,7 @@ public:
     bool IsFood(Snake *s);
     bool IsOtherSnake(Snake *s);
     void SnakeTruncate(Snake *s, Snake::item *to);
-    void RemoveSnake(const Snake *s);
+    void RemoveSnake(Snake *s);
     void AddSnake(Snake *s);
 
     // FoodHandler
@@ -123,7 +123,7 @@ void GameHandler::SnakeTruncate(Snake *s, Snake::item *to)
     }
 }
 
-void GameHandler::RemoveSnake(const Snake *s)
+void GameHandler::RemoveSnake(Snake *s)
 {
     List<Snake>::Iterator *it = snakes->Iterate();
     ListCursor<Snake> sn_c;
@@ -261,7 +261,7 @@ void SnakeHandler::SnakeTruncate(Snake *s, Snake::item *to)
     handler->SnakeTruncate(s, to);
 }
 
-void SnakeHandler::RemoveSnake(const Snake *s)
+void SnakeHandler::RemoveSnake(Snake *s)
 {
     handler->RemoveSnake(s);
 }

@@ -90,7 +90,7 @@ public:
 
     virtual void Handle(bool r, bool w);
     void SendTo(int fd, const char *msg, int len);
-    void StartGame() { st = started; }
+    void StartGame();
 
 private:
     void DrawAll();

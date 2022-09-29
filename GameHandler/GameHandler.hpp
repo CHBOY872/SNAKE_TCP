@@ -56,7 +56,7 @@ public:
     bool IsFood(Snake *s);
     bool IsOtherSnake(Snake *s);
     void SnakeTruncate(Snake *s, Snake::item *to);
-    void RemoveSnake(const Snake *s);
+    void RemoveSnake(Snake *s);
     void AddSnake(Snake *s);
 };
 

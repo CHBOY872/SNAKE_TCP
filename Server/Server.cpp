@@ -83,7 +83,7 @@ void EventSelector::Run()
                     FD_SET(i, &wrs);
             }
         }
-        max_time.tv_usec = 900000;
+        max_time.tv_usec = 500000;
         max_time.tv_sec = 0;
         struct timeval *t = server_fd->WantWrite() ? 0 : &max_time;
         res = select(max_fd + 1, &rds, &wrs, 0, t);
@@ -210,10 +210,11 @@ void Server::Handle(bool r, bool w)
         case started:
             while (p)
             {
-                p->cl->GetSnake()->Move();
                 ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
-                ((SnakeHandler)*handler).IsSnake(p->cl->GetSnake());
+                if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
+                    RemoveClient(p->cl);
                 ((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake());
+                p->cl->GetSnake()->Move();
                 p = p->next;
             }
             DrawAll();
@@ -247,6 +248,16 @@ void Server::DrawAll()
 void Server::SendTo(int fd, const char *msg, int len)
 {
     write(fd, msg, len);
+}
+
+void Server::StartGame()
+{
+    if (st != not_started)
+        return;
+    int i;
+    for (i = 0; i < 10; i++)
+        ((FoodHandler)*handler).AddFood();
+    st = started;
 }
 
 ////////////////////////////////////
@@ -323,4 +334,3 @@ void Client::StringHandle(const char *msg)
     }
     sn->ChangeDirection(&s);
 }
-
