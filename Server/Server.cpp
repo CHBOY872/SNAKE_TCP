@@ -95,6 +95,8 @@ void EventSelector::Run()
         if (res == 0)
         {
             server_fd->SetWrite(true);
+            server_fd->Handle(false, true);
+            continue;
         }
         for (i = 0; i <= max_fd; i++)
         {
