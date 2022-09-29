@@ -65,9 +65,7 @@ void EventSelector::Remove(FdHandler *h)
 
 void EventSelector::Run()
 {
-    struct timeval start_time;
     struct timeval max_time;
-    struct timeval end_time;
     for (;;)
     {
         int i, res;
@@ -84,11 +82,10 @@ void EventSelector::Run()
                     FD_SET(fd_array[i]->GetFd(), &wrs);
             }
         }
-        gettimeofday(&start_time, 0);
         max_time.tv_usec = 900000;
         max_time.tv_sec = 0;
-        res = select(max_fd + 1, &rds, &wrs, 0, &max_time);
-        gettimeofday(&end_time, 0);
+        struct timeval *t = server_fd->WantWrite() ? 0 : &max_time;
+        res = select(max_fd + 1, &rds, &wrs, 0, t);
         if (res < 0)
         {
             perror("select");
@@ -304,7 +301,7 @@ void Client::StringHandle(const char *msg)
     {
         the_master->StartGame();
     }
-    if (!strcmp(msg, "w"))
+    else if (!strcmp(msg, "w"))
     {
         s = MoveVector(0, -1);
     }
