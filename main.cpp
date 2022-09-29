@@ -9,7 +9,7 @@ static int port = 8808;
 
 int main()
 {
-    Field fld(80, 80);
+    Field fld(20, 20);
     List<Food> fod;
     List<Snake> snakes;
     GameHandlerGemstone handler(&fld, &fod, &snakes);

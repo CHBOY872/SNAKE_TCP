@@ -232,7 +232,8 @@ void Server::DrawAll()
     item *p = first;
     int len = (field->GetSizeX() + 1) * field->GetSizeY() + 1;
     char *field_for_send = new char[len];
-    ((DrawHandler)*handler).DrawField(field_for_send, len);
+    field_for_send[len - 1] = 0;
+    ((DrawHandler)*handler).DrawField(field_for_send);
     while (p)
     {
         ((DrawHandler)*handler)
@@ -322,3 +323,4 @@ void Client::StringHandle(const char *msg)
     }
     sn->ChangeDirection(&s);
 }
+

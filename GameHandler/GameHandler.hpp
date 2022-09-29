@@ -66,7 +66,7 @@ class DrawHandler
 
 public:
     DrawHandler(GameHandler *_handler);
-    void DrawField(char *draw_field, int len);
+    void DrawField(char *draw_field);
     void DrawFieldFor(const Snake *s, char *draw_field);
 };
 
