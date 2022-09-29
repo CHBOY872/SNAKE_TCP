@@ -66,10 +66,11 @@ void EventSelector::Remove(FdHandler *h)
 void EventSelector::Run()
 {
     struct timeval max_time;
+    fd_set rds;
+    fd_set wrs;
+    int i, res;
     for (;;)
     {
-        int i, res;
-        fd_set rds, wrs;
         FD_ZERO(&rds);
         FD_ZERO(&wrs);
         for (i = 0; i <= max_fd; i++)
@@ -77,9 +78,9 @@ void EventSelector::Run()
             if (fd_array[i])
             {
                 if (fd_array[i]->WantRead())
-                    FD_SET(fd_array[i]->GetFd(), &rds);
+                    FD_SET(i, &rds);
                 if (fd_array[i]->WantWrite())
-                    FD_SET(fd_array[i]->GetFd(), &wrs);
+                    FD_SET(i, &wrs);
             }
         }
         max_time.tv_usec = 900000;
@@ -99,8 +100,8 @@ void EventSelector::Run()
         {
             if (fd_array[i])
             {
-                bool r = FD_ISSET(fd_array[i]->GetFd(), &rds);
-                bool w = FD_ISSET(fd_array[i]->GetFd(), &wrs);
+                bool r = FD_ISSET(i, &rds);
+                bool w = FD_ISSET(i, &wrs);
                 if (r || w)
                     fd_array[i]->Handle(r, w);
             }

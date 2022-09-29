@@ -19,7 +19,7 @@ add_files()
     git add $SHFILES
 }
 
-if [[ -z $1 ]]
+if [ -z $1 ]
 then
     add_files
     git commit
