@@ -23,7 +23,7 @@ void Snake::Eat(Food *food)
 {
     item *tmp = new item(first->pos);
     tmp->pos -= move;
-    last->next = tmp;
-    last = tmp;
+    tmp->next = first;
+    first = tmp;
     len++;
 }
