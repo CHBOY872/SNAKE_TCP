@@ -96,13 +96,13 @@ bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
     while (it->More())
     {
         ListCursor<Snake> cr(it->Next());
+        if (cr->last == head)
+        {
+            delete it;
+            return true;
+        }
         if (s != &(*cr))
         {
-            if (cr->last == s->last)
-            {
-                delete it;
-                return true;
-            }
             second_snake_start = cr->first;
             while (second_snake_start != cr->last)
             {
