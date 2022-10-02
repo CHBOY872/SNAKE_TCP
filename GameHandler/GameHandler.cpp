@@ -35,6 +35,8 @@ public:
 
 bool GameHandler::IsSnake(Snake *s)
 {
+    if (s->GetLen() == 1)
+        return false;
     Snake::item *head = s->last;
     Snake::item *p;
     for (p = s->first; p != head; p = p->next)

@@ -23,14 +23,15 @@ class Snake
     item *last; // snakes head
 
     int id;
+    int len;
 
     MoveVector move;
     GameHandlerGemstone *the_master;
 
 public:
-    Snake() : first(0), last(0), move(0, 0), the_master(0) {}
+    Snake() : first(0), last(0), id(0), len(1), move(0, 0), the_master(0) {}
     Snake(const Position &_pos, int _id, GameHandlerGemstone *_the_master)
-        : first(new item(_pos)), last(first), id(_id),
+        : first(new item(_pos)), last(first), id(_id), len(1),
           move(0, 0), the_master(_the_master) {}
     ~Snake()
     {
@@ -42,6 +43,7 @@ public:
         }
     }
 
+    int GetLen() { return len; }
     void Move();
     void ChangeDirection(MoveVector *mv);
     void Eat(Food *food);

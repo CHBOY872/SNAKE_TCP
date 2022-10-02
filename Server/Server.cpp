@@ -212,7 +212,10 @@ void Server::Handle(bool r, bool w)
             {
                 ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
                 if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
+                {
                     RemoveClient(p->cl);
+                    p = p->next;
+                }
                 ((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake());
                 p->cl->GetSnake()->Move();
                 p = p->next;
