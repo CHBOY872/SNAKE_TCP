@@ -87,7 +87,8 @@ void GameHandler::AddFood()
     foods->Push(new Food(rand() % x, rand() % y));
 }
 
-bool GameHandler::IsOtherSnake(Snake *s)
+bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
+                                         // neccessary to delete snakes
 {
     List<Snake>::Iterator *it = snakes->Iterate();
     Snake::item *head = s->last;
@@ -97,6 +98,11 @@ bool GameHandler::IsOtherSnake(Snake *s)
         ListCursor<Snake> cr(it->Next());
         if (s != &(*cr))
         {
+            if (cr->last == s->last)
+            {
+                delete it;
+                return true;
+            }
             second_snake_start = cr->first;
             while (second_snake_start != cr->last)
             {
@@ -104,7 +110,7 @@ bool GameHandler::IsOtherSnake(Snake *s)
                 {
                     SnakeTruncate(&(*cr), second_snake_start);
                     delete it;
-                    return true;
+                    return false;
                 }
                 second_snake_start = second_snake_start->next;
             }

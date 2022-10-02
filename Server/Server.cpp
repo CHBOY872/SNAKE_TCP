@@ -222,7 +222,13 @@ void Server::Handle(bool r, bool w)
                     p = tmp;
                     continue;
                 }
-                ((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake());
+                if (((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake()))
+                {
+                    item *tmp = p->next;
+                    RemoveClient(p->cl);
+                    p = tmp;
+                    continue;
+                }
                 p->cl->GetSnake()->Move();
                 p = p->next;
             }
