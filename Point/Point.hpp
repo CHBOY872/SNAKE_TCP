@@ -33,6 +33,12 @@ public:
         pos_y += a.pos_y;
         return *this;
     }
+    const Point &operator-=(const Point &a)
+    {
+        pos_x -= a.pos_x;
+        pos_y -= a.pos_y;
+        return *this;
+    }
     Point operator+(const Point &a)
     {
         return Point(a.pos_x + pos_x, a.pos_y + pos_y);

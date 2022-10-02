@@ -21,8 +21,8 @@ void Snake::ChangeDirection(MoveVector *mv)
 
 void Snake::Eat(Food *food)
 {
-    item *tmp = new item(*food);
-    tmp->pos += move;
+    item *tmp = new item(first->pos);
+    tmp->pos -= move;
     last->next = tmp;
     last = tmp;
     len++;
