@@ -86,8 +86,8 @@ template <class T>
 void List<T>::Remove(ListCursor<T> *cursor)
 {
     item *tmp = (*cursor->itm)->next;
-    delete (*cursor->itm);
-    (*cursor->itm) = tmp;
+    delete *(cursor->itm);
+    *(cursor->itm) = tmp;
 }
 
 template <class T>
