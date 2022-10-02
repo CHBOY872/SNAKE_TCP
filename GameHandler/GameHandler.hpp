@@ -54,7 +54,7 @@ public:
     bool IsSnake(Snake *s); // check on own collision, returns true, if it was
                             // a collision
     bool IsFood(Snake *s);
-    bool IsOtherSnake(Snake *s);
+    bool IsOtherSnake(Snake *s, Snake **other_snake);
     void SnakeTruncate(Snake *s, Snake::item *to);
     void RemoveSnake(Snake *s);
     void AddSnake(Snake *s);

@@ -209,6 +209,7 @@ void Server::Handle(bool r, bool w)
     if (w)
     {
         item *p = first;
+        Snake *tmp_snake = 0;
         switch (st)
         {
         case started:
@@ -222,10 +223,13 @@ void Server::Handle(bool r, bool w)
                     p = tmp;
                     continue;
                 }
-                if (((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake()))
+                if (((SnakeHandler)*handler)
+                        .IsOtherSnake(p->cl->GetSnake(), &tmp_snake))
                 {
                     item *tmp = p->next;
                     RemoveClient(p->cl);
+                    Client *cl = FindClientBySnake(tmp_snake);
+                    RemoveClient(cl);
                     p = tmp;
                     continue;
                 }
@@ -269,6 +273,18 @@ void Server::StartGame()
     for (i = 0; i < 10; i++)
         ((FoodHandler)*handler).AddFood();
     st = started;
+}
+
+Client *Server::FindClientBySnake(Snake *s)
+{
+    item *p = first;
+    while (p)
+    {
+        if (p->cl->GetSnake() == s)
+            return p->cl;
+        p = first->next;
+    }
+    return 0;
 }
 
 ////////////////////////////////////

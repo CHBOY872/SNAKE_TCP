@@ -17,7 +17,7 @@ public:
     bool IsSnake(Snake *s); // check on own collision, returns true, if it was
                             // a collision
     bool IsFood(Snake *s);
-    bool IsOtherSnake(Snake *s);
+    bool IsOtherSnake(Snake *s, Snake **other_snake);
     void SnakeTruncate(Snake *s, Snake::item *to);
     void RemoveSnake(Snake *s);
     void AddSnake(Snake *s);
@@ -87,8 +87,8 @@ void GameHandler::AddFood()
     foods->Push(new Food(rand() % x, rand() % y));
 }
 
-bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
-                                         // neccessary to delete snakes
+bool GameHandler::IsOtherSnake(Snake *s, Snake **other_snake)
+// return false if it is not neccessary to delete snakes
 {
     List<Snake>::Iterator *it = snakes->Iterate();
     Snake::item *head = s->last;
@@ -98,8 +98,9 @@ bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
         ListCursor<Snake> cr(it->Next());
         if (s != &(*cr))
         {
-            if (cr->last == head)
+            if (cr->last->pos == head->pos)
             {
+                *other_snake = &(*cr);
                 delete it;
                 return true;
             }
@@ -110,6 +111,7 @@ bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
                 {
                     SnakeTruncate(&(*cr), second_snake_start);
                     delete it;
+                    *other_snake = 0;
                     return false;
                 }
                 second_snake_start = second_snake_start->next;
@@ -117,6 +119,7 @@ bool GameHandler::IsOtherSnake(Snake *s) // return false if it is not
         }
     }
     delete it;
+    *other_snake = 0;
     return false;
 }
 
@@ -265,9 +268,9 @@ bool SnakeHandler::IsFood(Snake *s)
     return handler->IsFood(s);
 }
 
-bool SnakeHandler::IsOtherSnake(Snake *s)
+bool SnakeHandler::IsOtherSnake(Snake *s, Snake **other_snake)
 {
-    return handler->IsOtherSnake(s);
+    return handler->IsOtherSnake(s, other_snake);
 }
 
 void SnakeHandler::SnakeTruncate(Snake *s, Snake::item *to)

@@ -94,6 +94,7 @@ public:
 
 private:
     void DrawAll();
+    Client *FindClientBySnake(Snake *s);
 };
 
 class Client : public FdHandler
