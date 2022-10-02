@@ -215,7 +215,6 @@ void Server::Handle(bool r, bool w)
         case started:
             while (p)
             {
-                ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
                 if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
                 {
                     item *tmp = p->next;
@@ -233,6 +232,12 @@ void Server::Handle(bool r, bool w)
                     p = tmp;
                     continue;
                 }
+                ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
+                p = p->next;
+            }
+            p = first;
+            while (p)
+            {
                 p->cl->GetSnake()->Move();
                 p = p->next;
             }
