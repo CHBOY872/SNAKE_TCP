@@ -75,16 +75,17 @@ class Server : public FdHandler
     GameHandlerGemstone *handler;
     int snakes_count;
     game_step st;
+    int food_count;
 
     Server(int _fd, EventSelector *_the_selector,
            Field *_field,
-           GameHandlerGemstone *_handler);
+           GameHandlerGemstone *_handler, int _food_count);
 
 public:
     virtual ~Server();
     static Server *Start(int port, EventSelector *_the_selector,
                          Field *_field,
-                         GameHandlerGemstone *_handler);
+                         GameHandlerGemstone *_handler, int _food_count);
 
     void RemoveClient(Client *cl);
 

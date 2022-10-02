@@ -124,9 +124,10 @@ void EventSelector::SetServerFd(FdHandler *h)
 
 Server::Server(int _fd, EventSelector *_the_selector,
                Field *_field,
-               GameHandlerGemstone *_handler)
+               GameHandlerGemstone *_handler, int _food_count)
     : FdHandler(_fd), first(0), the_selector(_the_selector), field(_field),
-      handler(_handler), snakes_count(0), st(not_started)
+      handler(_handler), snakes_count(0), st(not_started), 
+      food_count(_food_count)
 {
     the_selector->Add(this);
     the_selector->SetServerFd(this);
@@ -146,7 +147,7 @@ Server::~Server()
 
 Server *Server::Start(int port, EventSelector *_the_selector,
                       Field *_field,
-                      GameHandlerGemstone *_handler)
+                      GameHandlerGemstone *_handler, int _food_count)
 {
     sockaddr_in addr;
     int opt = 1;
@@ -165,7 +166,7 @@ Server *Server::Start(int port, EventSelector *_the_selector,
     if (-1 == listen(_fd, fd_array_len_start))
         return 0;
 
-    return new Server(_fd, _the_selector, _field, _handler);
+    return new Server(_fd, _the_selector, _field, _handler, _food_count);
 }
 
 void Server::RemoveClient(Client *cl)
@@ -275,7 +276,7 @@ void Server::StartGame()
     if (st != not_started)
         return;
     int i;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < food_count; i++)
         ((FoodHandler)*handler).AddFood();
     st = started;
 }

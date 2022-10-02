@@ -9,15 +9,21 @@
 
 static int port = 8808;
 
+enum {
+    std_width = 79,
+    std_height = 19,
+    std_food_count = 10
+};
+
 int main()
 {
     srand(time(0));
-    Field fld(80, 20);
+    Field fld(std_width, std_height);
     List<Food> fod;
     List<Snake> snakes;
     GameHandlerGemstone handler(&fld, &fod, &snakes);
     EventSelector *sel = new EventSelector;
-    Server *serv = Server::Start(port, sel, &fld, &handler);
+    Server *serv = Server::Start(port, sel, &fld, &handler, std_food_count);
     if (!serv)
     {
         perror("server");
