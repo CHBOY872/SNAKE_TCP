@@ -21,7 +21,7 @@ class FdHandler
 public:
     FdHandler(int _fd, bool _want_read = true, bool _want_write = false)
         : fd(_fd), want_read(_want_read), want_write(_want_write) {}
-    virtual ~FdHandler() {}
+    virtual ~FdHandler();
 
     int GetFd() { return fd; }
     bool WantRead() { return want_read; }

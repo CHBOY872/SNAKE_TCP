@@ -25,4 +25,5 @@ void Snake::Eat(Food *food)
     tmp->pos += move;
     last->next = tmp;
     last = tmp;
+    len++;
 }

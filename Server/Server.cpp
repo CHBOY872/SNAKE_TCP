@@ -16,6 +16,10 @@
 
 #include "Server.hpp"
 
+FdHandler::~FdHandler() { close(fd); }
+
+///////////////////////////////////////
+
 EventSelector::~EventSelector()
 {
     if (fd_array)
@@ -213,8 +217,10 @@ void Server::Handle(bool r, bool w)
                 ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
                 if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
                 {
+                    item *tmp = p->next;
                     RemoveClient(p->cl);
-                    p = p->next;
+                    p = tmp;
+                    continue;
                 }
                 ((SnakeHandler)*handler).IsOtherSnake(p->cl->GetSnake());
                 p->cl->GetSnake()->Move();
