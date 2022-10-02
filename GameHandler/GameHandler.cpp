@@ -121,8 +121,10 @@ void GameHandler::SnakeTruncate(Snake *s, Snake::item *to)
     {
         Snake::item *tmp = p->next;
         delete p;
+        s->len--;
         p = tmp;
     }
+    s->first = p;
 }
 
 void GameHandler::RemoveSnake(Snake *s)
