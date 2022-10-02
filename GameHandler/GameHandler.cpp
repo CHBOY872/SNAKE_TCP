@@ -133,7 +133,10 @@ void GameHandler::RemoveSnake(Snake *s)
     {
         sn_c = it->Next();
         if (&(*sn_c) == s)
+        {
             snakes->Remove(&sn_c);
+            break;
+        }
     }
     delete it;
 }
