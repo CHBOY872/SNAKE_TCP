@@ -29,8 +29,8 @@ public:
     void HandleOutOfField(Snake *s);
 
     // DrawHandler
-    void DrawField(char *draw_field);
-    void DrawFieldFor(const Snake *s, char *draw_field);
+    void DrawField();
+    void DrawFieldFor(const Snake *s);
 };
 
 bool GameHandler::IsSnake(Snake *s)
@@ -148,7 +148,7 @@ void GameHandler::AddSnake(Snake *s)
     snakes->Push(s);
 }
 
-void GameHandler::DrawField(char *draw_field)
+void GameHandler::DrawField()
 {
     /*
         erase all field
@@ -161,14 +161,15 @@ void GameHandler::DrawField(char *draw_field)
     for (i = 0; i < y; i++)
     {
         for (j = 0; j < x - 1; j++)
-            draw_field[i * x + j] = ' ';
-        draw_field[i * x + j] = '\n';
+            field->field[i * x + j] = ' ';
+        field->field[i * x + j] = '\n';
     }
+    field->field[field->full_len - 1] = 0;
     List<Food>::Iterator *it_food = foods->Iterate();
     while (it_food->More())
     {
         ListCursor<Food> cr_food = it_food->Next();
-        draw_field[cr_food->GetX() + cr_food->GetY() * x] = '*';
+        field->field[cr_food->GetX() + cr_food->GetY() * x] = '*';
     }
     delete it_food;
     List<Snake>::Iterator *it_snake = snakes->Iterate();
@@ -178,14 +179,14 @@ void GameHandler::DrawField(char *draw_field)
         Snake::item *p = cr_snake->first;
         while (p)
         {
-            draw_field[p->pos.GetX() + p->pos.GetY() * x] = '#';
+            field->field[p->pos.GetX() + p->pos.GetY() * x] = '#';
             p = p->next;
         }
     }
     delete it_snake;
 }
 
-void GameHandler::DrawFieldFor(const Snake *s, char *draw_field)
+void GameHandler::DrawFieldFor(const Snake *s)
 {
     int x = field->GetSizeX() + 1;
     List<Snake>::Iterator *it_snake = snakes->Iterate();
@@ -193,11 +194,11 @@ void GameHandler::DrawFieldFor(const Snake *s, char *draw_field)
     {
         ListCursor<Snake> cr_snake = it_snake->Next();
         if (&(*cr_snake) == s)
-            draw_field[cr_snake->last->pos.GetX() +
-                       cr_snake->last->pos.GetY() * x] = '@';
+            field->field[cr_snake->last->pos.GetX() +
+                         cr_snake->last->pos.GetY() * x] = '@';
         else
-            draw_field[cr_snake->last->pos.GetX() +
-                       cr_snake->last->pos.GetY() * x] = '%';
+            field->field[cr_snake->last->pos.GetX() +
+                         cr_snake->last->pos.GetY() * x] = '%';
     }
     delete it_snake;
 }
@@ -282,14 +283,14 @@ void SnakeHandler::AddSnake(Snake *s)
 
 DrawHandler::DrawHandler(GameHandler *_handler) : handler(_handler) {}
 
-void DrawHandler::DrawField(char *draw_field)
+void DrawHandler::DrawField()
 {
-    handler->DrawField(draw_field);
+    handler->DrawField();
 }
 
-void DrawHandler::DrawFieldFor(const Snake *s, char *draw_field)
+void DrawHandler::DrawFieldFor(const Snake *s)
 {
-    handler->DrawFieldFor(s, draw_field);
+    handler->DrawFieldFor(s);
 }
 
 /////////////////////////

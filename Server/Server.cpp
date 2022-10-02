@@ -240,18 +240,14 @@ void Server::Handle(bool r, bool w)
 void Server::DrawAll()
 {
     item *p = first;
-    int len = (field->GetSizeX() + 1) * field->GetSizeY() + 1;
-    char *field_for_send = new char[len];
-    field_for_send[len - 1] = 0;
-    ((DrawHandler)*handler).DrawField(field_for_send);
+    ((DrawHandler)*handler).DrawField();
     while (p)
     {
         ((DrawHandler)*handler)
-            .DrawFieldFor(p->cl->GetSnake(), field_for_send);
-        SendTo(p->cl->GetFd(), field_for_send, len);
+            .DrawFieldFor(p->cl->GetSnake());
+        SendTo(p->cl->GetFd(), field->GetField(), field->GetFullLen());
         p = p->next;
     }
-    delete[] field_for_send;
 }
 
 void Server::SendTo(int fd, const char *msg, int len)
