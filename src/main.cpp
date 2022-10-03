@@ -10,9 +10,9 @@
 static int port = 8808;
 
 enum {
-    std_width = 79,
-    std_height = 19,
-    std_food_count = 10
+    std_width = 100,
+    std_height = 40,
+    std_food_count = 15
 };
 
 int main()

@@ -19,7 +19,7 @@
 enum
 {
     time_for_write_sec = 0,
-    time_for_write_usec = 500000
+    time_for_write_usec = 250000
 };
 
 FdHandler::~FdHandler()
@@ -316,7 +316,7 @@ Client *Server::FindClientBySnake(Snake *s)
     {
         if (p->cl->GetSnake() == s)
             return p->cl;
-        p = first->next;
+        p = p->next;
     }
     return 0;
 }
