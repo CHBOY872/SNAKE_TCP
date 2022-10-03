@@ -35,9 +35,9 @@ The exemplary field is:
                                                                               *
 ```
 
-If you want to connect to a game, you should have a tellnet client, then type in terminal
+If you want to connect to a game, you should have a telnet client, then type in terminal
 ```
-tellnet <ip where game was excecuted> <port>
+telnet <ip where game was excecuted> <port>
 ```
 
 The standard size of field is 79x19, food count is 10 but you can change it in `src/main.cpp` file and rebuild a game.
