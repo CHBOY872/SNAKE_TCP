@@ -7,6 +7,7 @@ HPPFILES=$(find . -name '*.hpp')
 MAKEFILES=$(find . -name 'makefile')
 DOTMKFILES=$(find . -name '*.mk')
 SHFILES=$(find . -name '*.sh')
+MDFILES=$(find . -name '*.md')
 
 add_files()
 {
@@ -17,6 +18,7 @@ add_files()
     git add $MAKEFILES
     git add $DOTMKFILES
     git add $SHFILES
+    git add $MDFILES
 }
 
 if [ -z $1 ]
