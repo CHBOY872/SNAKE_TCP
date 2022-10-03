@@ -125,7 +125,8 @@ void EventSelector::SetServerFd(FdHandler *h)
 Server::Server(int _fd, EventSelector *_the_selector,
                Field *_field,
                GameHandlerGemstone *_handler, int _food_count)
-    : FdHandler(_fd), first(0), the_selector(_the_selector), field(_field),
+    : FdHandler(_fd), first(0), delete_list(0),
+      the_selector(_the_selector), field(_field),
       handler(_handler), snakes_count(0), st(not_started),
       food_count(_food_count)
 {
@@ -228,11 +229,11 @@ void Server::Handle(bool r, bool w)
                         .IsOtherSnake(p->cl->GetSnake(), &tmp_snake))
                 {
                     item *tmp = p->next;
-                    RemoveClient(p->cl);
+                    AddToDeleteList(p->cl);
                     if (tmp_snake)
                     {
                         Client *cl = FindClientBySnake(tmp_snake);
-                        RemoveClient(cl);
+                        AddToDeleteList(cl);
                     }
                     p = tmp;
                     continue;
@@ -246,6 +247,7 @@ void Server::Handle(bool r, bool w)
                 p->cl->GetSnake()->Move();
                 p = p->next;
             }
+            DeleteAllFromList();
             DrawAll();
             break;
 
@@ -295,6 +297,26 @@ Client *Server::FindClientBySnake(Snake *s)
         p = first->next;
     }
     return 0;
+}
+
+void Server::AddToDeleteList(Client *cl)
+{
+    item *delete_tmp = new item;
+    delete_tmp->cl = cl;
+    delete_tmp->next = delete_list;
+    delete_list = delete_tmp;
+}
+
+void Server::DeleteAllFromList()
+{
+    item *p = delete_list;
+    while (p)
+    {
+        RemoveClient(p->cl);
+        item *tmp = p->next;
+        delete p;
+        p = tmp;
+    }
 }
 
 ////////////////////////////////////

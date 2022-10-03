@@ -70,6 +70,7 @@ class Server : public FdHandler
         item *next;
     };
     item *first;
+    item *delete_list;
     EventSelector *the_selector;
     Field *field;
     GameHandlerGemstone *handler;
@@ -96,6 +97,8 @@ public:
 private:
     void DrawAll();
     Client *FindClientBySnake(Snake *s);
+    void AddToDeleteList(Client *cl);
+    void DeleteAllFromList();
 };
 
 class Client : public FdHandler
