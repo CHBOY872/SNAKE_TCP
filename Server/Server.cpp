@@ -16,7 +16,16 @@
 
 #include "Server.hpp"
 
-FdHandler::~FdHandler() { close(fd); }
+enum
+{
+    time_for_write_sec = 0,
+    time_for_write_usec = 500000
+};
+
+FdHandler::~FdHandler()
+{
+    close(fd);
+}
 
 ///////////////////////////////////////
 
@@ -69,10 +78,12 @@ void EventSelector::Remove(FdHandler *h)
 
 void EventSelector::Run()
 {
-    struct timeval max_time;
+    struct timeval max_time, start_time, end_time;
     fd_set rds;
     fd_set wrs;
     int i, res;
+    max_time.tv_usec = time_for_write_usec;
+    max_time.tv_sec = time_for_write_sec;
     for (;;)
     {
         FD_ZERO(&rds);
@@ -87,10 +98,10 @@ void EventSelector::Run()
                     FD_SET(i, &wrs);
             }
         }
-        max_time.tv_usec = 500000;
-        max_time.tv_sec = 0;
+        gettimeofday(&start_time, 0);
         struct timeval *t = server_fd->WantWrite() ? 0 : &max_time;
         res = select(max_fd + 1, &rds, &wrs, 0, t);
+        gettimeofday(&end_time, 0);
         if (res < 0)
         {
             perror("select");
@@ -100,6 +111,8 @@ void EventSelector::Run()
         {
             server_fd->SetWrite(true);
             server_fd->Handle(false, true);
+            max_time.tv_usec = time_for_write_usec;
+            max_time.tv_sec = time_for_write_sec;
             continue;
         }
         for (i = 0; i <= max_fd; i++)
@@ -112,6 +125,12 @@ void EventSelector::Run()
                     fd_array[i]->Handle(r, w);
             }
         }
+        int res_time_sec = end_time.tv_sec - start_time.tv_sec;
+        int res_time_usec = end_time.tv_usec - start_time.tv_usec;
+        if (res_time_sec > 0 && res_time_sec < time_for_write_sec)
+            max_time.tv_sec = res_time_sec;
+        if (res_time_usec > 0 && res_time_usec < time_for_write_usec)
+            max_time.tv_usec = res_time_usec;
     }
 }
 
@@ -209,54 +228,57 @@ void Server::Handle(bool r, bool w)
         the_selector->Add(tmp->cl);
     }
     if (w)
+        WriteHandle();
+}
+
+void Server::WriteHandle()
+{
+    item *p = first;
+    Snake *tmp_snake;
+    switch (st)
     {
-        item *p = first;
-        Snake *tmp_snake;
-        switch (st)
+    case started:
+        while (p)
         {
-        case started:
-            while (p)
+            tmp_snake = 0;
+            if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
             {
-                tmp_snake = 0;
-                if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
-                {
-                    item *tmp = p->next;
-                    RemoveClient(p->cl);
-                    p = tmp;
-                    continue;
-                }
-                if (((SnakeHandler)*handler)
-                        .IsOtherSnake(p->cl->GetSnake(), &tmp_snake))
-                {
-                    item *tmp = p->next;
-                    AddToDeleteList(p->cl);
-                    if (tmp_snake)
-                    {
-                        Client *cl = FindClientBySnake(tmp_snake);
-                        AddToDeleteList(cl);
-                    }
-                    p = tmp;
-                    continue;
-                }
-                ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
-                p = p->next;
+                item *tmp = p->next;
+                RemoveClient(p->cl);
+                p = tmp;
+                continue;
             }
-            p = first;
-            while (p)
+            if (((SnakeHandler)*handler)
+                    .IsOtherSnake(p->cl->GetSnake(), &tmp_snake))
             {
-                p->cl->GetSnake()->Move();
-                p = p->next;
+                item *tmp = p->next;
+                AddToDeleteList(p->cl);
+                if (tmp_snake)
+                {
+                    Client *cl = FindClientBySnake(tmp_snake);
+                    AddToDeleteList(cl);
+                }
+                p = tmp;
+                continue;
             }
-            DeleteAllFromList();
-            DrawAll();
-            break;
-
-        default:
-            break;
+            ((SnakeHandler)*handler).IsFood(p->cl->GetSnake());
+            p = p->next;
         }
+        p = first;
+        while (p)
+        {
+            p->cl->GetSnake()->Move();
+            p = p->next;
+        }
+        DeleteAllFromList();
+        DrawAll();
+        break;
 
-        SetWrite(false);
+    default:
+        break;
     }
+
+    SetWrite(false);
 }
 
 void Server::DrawAll()
