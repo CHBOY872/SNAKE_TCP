@@ -14,25 +14,47 @@ to build a game
 
 The exemplary field is:
 ```
-                                                                               
-                     *                                                         
-                                                                               
-                                                                               
-                                                                               
-                 *                                                             
-                                                                  %######      
-                                                                               
-   *                                                                           
-                                                                               
-                                                          *                    
-       *                                                                       
-                                                                               
-      *                                                                        
-                                                     @##################       
-                                                                               
-*                                                                              
-                  *                                      *                     
-                                                                              *
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                   *                                
+                                                                                                    
+           * *                                                                                      
+                                                                                                    
+                                                     *                              *               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                            *                       
+                                                                                                    
+                                                                                %                   
+                                                                                                    
+                                                                                                    
+                          *                                                                         
+             @#                              #%                                                     
+                                                                                       *            
+                                                                                                    
+                                                                                                    
+                 *                                                                                  
+                *                                                                                   
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                  *                                                 
+                                                                                                    
+                     *                                                                              
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                     *                                                             *
+            %                                                                                       
+             *                                                                                      
+                 #%                                                                                 
+                                                                                                    
+                                                                                                    
+                                                                                                    
 ```
 
 If you want to connect to a game, you should have a telnet client, then type in terminal
