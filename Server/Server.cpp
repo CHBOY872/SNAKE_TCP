@@ -301,6 +301,13 @@ Client *Server::FindClientBySnake(Snake *s)
 
 void Server::AddToDeleteList(Client *cl)
 {
+    item *p = delete_list;
+    while (p)
+    {
+        if (cl == p->cl)
+            return;
+        p = p->next;
+    }
     item *delete_tmp = new item;
     delete_tmp->cl = cl;
     delete_tmp->next = delete_list;
