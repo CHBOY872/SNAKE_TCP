@@ -40,8 +40,8 @@ If you want to connect to a game, you should have a telnet client, then type in 
 telnet <ip where game was excecuted> <port>
 ```
 
-The standard size of field is 79x19, food count is 10 but you can change it in `src/main.cpp` file and rebuild a game.
-The standard time of updating a field is 500000 usec, but you can change it in `src/Server/Server.cpp` file and rebuild a game.
+The standard size of field is 100x40, food count is 15 but you can change it in `src/main.cpp` file and rebuild a game.
+The standard time of updating a field is 250000 usec, but you can change it in `src/Server/Server.cpp` file and rebuild a game.
 
 If you want to start moving or change direction, you should use key `WASD` keys and `Enter`.
 Type one of `WASD` keys and press `Enter` to send to server the key you wrote.
