@@ -324,6 +324,7 @@ void Server::DeleteAllFromList()
         delete p;
         p = tmp;
     }
+    delete_list = 0;
 }
 
 ////////////////////////////////////
