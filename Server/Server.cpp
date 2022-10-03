@@ -126,7 +126,7 @@ Server::Server(int _fd, EventSelector *_the_selector,
                Field *_field,
                GameHandlerGemstone *_handler, int _food_count)
     : FdHandler(_fd), first(0), the_selector(_the_selector), field(_field),
-      handler(_handler), snakes_count(0), st(not_started), 
+      handler(_handler), snakes_count(0), st(not_started),
       food_count(_food_count)
 {
     the_selector->Add(this);
@@ -228,8 +228,12 @@ void Server::Handle(bool r, bool w)
                 {
                     item *tmp = p->next;
                     RemoveClient(p->cl);
-                    Client *cl = FindClientBySnake(tmp_snake);
-                    RemoveClient(cl);
+                    if (tmp_snake)
+                    {
+                        Client *cl = FindClientBySnake(tmp_snake);
+                        RemoveClient(cl);
+                        tmp_snake = 0;
+                    }
                     p = tmp;
                     continue;
                 }
