@@ -12,6 +12,29 @@ to build a game
 
 ## How to play
 
+The exemplary field is:
+```
+                                                                               
+                     *                                                         
+                                                                               
+                                                                               
+                                                                               
+                 *                                                             
+                                                                  %######      
+                                                                               
+   *                                                                           
+                                                                               
+                                                          *                    
+       *                                                                       
+                                                                               
+      *                                                                        
+                                                     @##################       
+                                                                               
+*                                                                              
+                  *                                      *                     
+                                                                              *
+```
+
 The standard size of field is 79x19, food count is 10 but you can change it in `src/main.cpp` file and rebuild a game.
 The standard time of updating a field is 500000 usec, but you can change it in `src/Server/Server.cpp` file and rebuild a game.
 
