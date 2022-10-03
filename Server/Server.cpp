@@ -210,12 +210,13 @@ void Server::Handle(bool r, bool w)
     if (w)
     {
         item *p = first;
-        Snake *tmp_snake = 0;
+        Snake *tmp_snake;
         switch (st)
         {
         case started:
             while (p)
             {
+                tmp_snake = 0;
                 if (((SnakeHandler)*handler).IsSnake(p->cl->GetSnake()))
                 {
                     item *tmp = p->next;
@@ -232,7 +233,6 @@ void Server::Handle(bool r, bool w)
                     {
                         Client *cl = FindClientBySnake(tmp_snake);
                         RemoveClient(cl);
-                        tmp_snake = 0;
                     }
                     p = tmp;
                     continue;
