@@ -1,6 +1,6 @@
 # SNAKE_TCP
 
-Snake TCP/IP is an online game which was written in C++ language. Spend your time playing that game and finding some bugs and errors! :)
+Snake TCP is an online game which was written in C++ language. Spend your time playing that game and finding some bugs and errors! :)
 
 ## How to build
 
