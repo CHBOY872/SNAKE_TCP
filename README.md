@@ -1,6 +1,6 @@
-# SNAKE_TCP/IP
+# SNAKE_TCP
 
-Snake TCP/IP is an online game which was written in C++ language. Spend your time playing that game and finding some bugs and errors! :)
+Snake TCP is an online game which was written in C++ language. Spend your time playing that game and finding some bugs and errors! :)
 
 ## How to build
 
@@ -11,6 +11,34 @@ Type in terminal
 to build a game
 
 ## How to play
+
+The exemplary field is:
+```
+                                                                               
+                     *                                                         
+                                                                               
+                                                                               
+                                                                               
+                 *                                                             
+                                                                  %######      
+                                                                               
+   *                                                                           
+                                                                               
+                                                          *                    
+       *                                                                       
+                                                                               
+      *                                                                        
+                                                     @##################       
+                                                                               
+*                                                                              
+                  *                                      *                     
+                                                                              *
+```
+
+If you want to connect to a game, you should have a telnet client, then type in terminal
+```
+telnet <ip where game was excecuted> <port>
+```
 
 The standard size of field is 79x19, food count is 10 but you can change it in `src/main.cpp` file and rebuild a game.
 The standard time of updating a field is 500000 usec, but you can change it in `src/Server/Server.cpp` file and rebuild a game.
