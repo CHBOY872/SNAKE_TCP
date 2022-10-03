@@ -99,6 +99,7 @@ private:
     Client *FindClientBySnake(Snake *s);
     void AddToDeleteList(Client *cl);
     void DeleteAllFromList();
+    void WriteHandle();
 };
 
 class Client : public FdHandler
