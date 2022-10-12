@@ -165,9 +165,9 @@ Server::~Server()
     }
 }
 
-Server *Server::Start(int port, EventSelector *_the_selector,
-                      Field *_field,
-                      GameHandlerGemstone *_handler, int _food_count)
+Server *Server::Start(EventSelector *_the_selector, Field *_field,
+                      GameHandlerGemstone *_handler, int _food_count,
+					  int port, const char *ip)
 {
     sockaddr_in addr;
     int opt = 1;
@@ -175,17 +175,23 @@ Server *Server::Start(int port, EventSelector *_the_selector,
     if (-1 == _fd)
         return 0;
     setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
-    addr.sin_addr.s_addr = htons(INADDR_ANY);
-    addr.sin_port = htons(port);
+	
+	if (!ip)
+    	addr.sin_addr.s_addr = htons(INADDR_ANY);
+	else
+		addr.sin_addr.s_addr = inet_addr(ip);
+    
+	addr.sin_port = htons(port);
     addr.sin_family = AF_INET;
 
     if (-1 == bind(_fd, (sockaddr *)&addr, sizeof(addr)))
         return 0;
 
     if (-1 == listen(_fd, fd_array_len_start))
-        return 0;
-
+        { return 0; }
+	printf("Created server on\n"
+		   "IP: %s\n"
+		   "PORT: %d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
     return new Server(_fd, _the_selector, _field, _handler, _food_count);
 }
 

@@ -84,9 +84,9 @@ class Server : public FdHandler
 
 public:
     virtual ~Server();
-    static Server *Start(int port, EventSelector *_the_selector,
-                         Field *_field,
-                         GameHandlerGemstone *_handler, int _food_count);
+    static Server *Start(EventSelector *_the_selector, Field *_field,
+                         GameHandlerGemstone *_handler, int _food_count,
+						 int port, const char *ip);
 
     void RemoveClient(Client *cl);
 
