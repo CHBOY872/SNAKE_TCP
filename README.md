@@ -10,6 +10,17 @@ Type in terminal
 ```
 to build a game
 
+## How to run a server
+
+If you want to run a server, type 
+```
+./main
+```
+For more information type
+``` 
+./main -help
+```
+
 ## How to play
 
 The exemplary field is:
@@ -62,7 +73,7 @@ If you want to connect to a game, you should have a telnet client, then type in 
 telnet <ip where game was excecuted> <port>
 ```
 
-The standard size of field is 100x40, food count is 15 but you can change it in `src/main.cpp` file and rebuild a game.
+The standard size of field is 100x40, food count is 15 but you can change it in `src/GameInit/GameInit.hpp` file and rebuild a game.
 The standard time of updating a field is 250000 usec, but you can change it in `src/Server/Server.cpp` file and rebuild a game.
 
 If you want to start moving or change direction, you should use key `WASD` keys and `Enter`.
